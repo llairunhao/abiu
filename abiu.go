@@ -132,6 +132,19 @@ func (number *Int32) UnmarshalJSON(b []byte) error {
 }
 
 //---------------------------
+type Int64 struct {
+	Value int64
+}
+
+func (number *Int64) MarshalJSON() ([]byte, error) {
+	return json.Marshal(number.Value)
+}
+
+func (number *Int64) UnmarshalJSON(b []byte) error {
+	return json.Unmarshal(b, &number.Value)
+}
+
+//---------------------------
 type Int struct {
 	Value int
 }
