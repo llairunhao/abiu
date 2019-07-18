@@ -14,11 +14,12 @@ type String struct {
 }
 
 //-------------------------------------------------------
-func (s *String) SetValue(v interface{}) {
+func (s *String) SetValue(v interface{}) error {
 	var ok bool
 	if s.value, ok = v.(string); !ok {
 		s.value = fmt.Sprintf("%v", v)
 	}
+	return nil
 }
 
 func (s *String) Value() interface{} {
@@ -36,6 +37,10 @@ func (s *String) MarshalJSON() ([]byte, error) {
 
 func (s *String) UnmarshalJSON(b []byte) error {
 	return json.Unmarshal(b, &s.value)
+}
+
+func (s *String) String() string {
+	return s.value
 }
 
 //-------------------------------------------------------

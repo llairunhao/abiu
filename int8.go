@@ -1,6 +1,9 @@
 package abiu
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"fmt"
+)
 
 func NewInt8(value int8) *Int8 {
 	return &Int8{value: value}
@@ -11,11 +14,25 @@ type Int8 struct {
 }
 
 //-------------------------------------------------------
-func (number *Int8) SetValue(v interface{}) {
-	var ok bool
-	if number.value, ok = v.(int8); !ok {
-		number.value = 0
+func (number *Int8) SetValue(v interface{}) error {
+	switch v.(type) {
+	case int8:
+		{
+			number.value = v.(int8)
+		}
+	case string:
+		{
+			str := v.(string)
+			value, err := intValue(str, 8)
+			if err != nil {
+				return err
+			}
+			number.value = int8(value)
+		}
+	default:
+		return typeError(v)
 	}
+	return nil
 }
 
 func (number *Int8) Value() interface{} {
@@ -34,6 +51,10 @@ func (number *Int8) MarshalJSON() ([]byte, error) {
 
 func (number *Int8) UnmarshalJSON(b []byte) error {
 	return json.Unmarshal(b, &number.value)
+}
+
+func (number *Int8) String() string {
+	return fmt.Sprintf("%d", number.value)
 }
 
 func (number *Int8) IsZero() bool {

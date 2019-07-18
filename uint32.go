@@ -1,6 +1,9 @@
 package abiu
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"fmt"
+)
 
 func NewUInt32(value uint32) *UInt32 {
 	return &UInt32{value: value}
@@ -11,11 +14,25 @@ type UInt32 struct {
 }
 
 //-------------------------------------------------------
-func (number *UInt32) SetValue(v interface{}) {
-	var ok bool
-	if number.value, ok = v.(uint32); !ok {
-		number.value = 0
+func (number *UInt32) SetValue(v interface{}) error {
+	switch v.(type) {
+	case uint32:
+		{
+			number.value = v.(uint32)
+		}
+	case string:
+		{
+			str := v.(string)
+			value, err := uintValue(str, 32)
+			if err != nil {
+				return err
+			}
+			number.value = uint32(value)
+		}
+	default:
+		return typeError(v)
 	}
+	return nil
 }
 
 func (number *UInt32) Value() interface{} {
@@ -34,6 +51,10 @@ func (number *UInt32) MarshalJSON() ([]byte, error) {
 
 func (number *UInt32) UnmarshalJSON(b []byte) error {
 	return json.Unmarshal(b, &number.value)
+}
+
+func (number *UInt32) String() string {
+	return fmt.Sprintf("%d", number.value)
 }
 
 func (number *UInt32) IsZero() bool {

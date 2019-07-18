@@ -5,29 +5,29 @@ import (
 	"fmt"
 )
 
-func NewByte(value byte) *Byte {
-	return &Byte{value: value}
+func NewDouble(value float64) *Double {
+	return &Double{value: value}
 }
 
-type Byte struct {
-	value byte
+type Double struct {
+	value float64
 }
 
 //-------------------------------------------------------
-func (number *Byte) SetValue(v interface{}) error {
+func (number *Double) SetValue(v interface{}) error {
 	switch v.(type) {
-	case byte:
+	case float64:
 		{
-			number.value = v.(byte)
+			number.value = v.(float64)
 		}
 	case string:
 		{
 			str := v.(string)
-			value, err := uintValue(str, 8)
+			value, err := floatValue(str, 64)
 			if err != nil {
 				return err
 			}
-			number.value = byte(value)
+			number.value = float64(value)
 		}
 	default:
 		return typeError(v)
@@ -35,28 +35,29 @@ func (number *Byte) SetValue(v interface{}) error {
 	return nil
 }
 
-func (number *Byte) Value() interface{} {
+func (number *Double) Value() interface{} {
 	return number.value
 }
 
-func (number *Byte) ValuePtr() interface{} {
+func (number *Double) ValuePtr() interface{} {
 	return &number.value
 }
 
 //-------------------------------------------------------
-func (number *Byte) MarshalJSON() ([]byte, error) {
+
+func (number *Double) MarshalJSON() ([]byte, error) {
 	return json.Marshal(number.value)
 }
 
-func (number *Byte) UnmarshalJSON(b []byte) error {
+func (number *Double) UnmarshalJSON(b []byte) error {
 	return json.Unmarshal(b, &number.value)
 }
 
-func (number *Byte) String() string {
+func (number *Double) String() string {
 	return fmt.Sprintf("%d", number.value)
 }
 
-func (number *Byte) IsZero() bool {
+func (number *Double) IsZero() bool {
 	if number == nil {
 		return true
 	}
