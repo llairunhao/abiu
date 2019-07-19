@@ -6,7 +6,9 @@ import (
 	"strconv"
 )
 
-type ABType interface {
+type ABiuType interface {
+	String() string
+
 	SetValue(v interface{}) error
 
 	Value() interface{}
